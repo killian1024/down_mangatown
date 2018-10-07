@@ -23,6 +23,24 @@ program::program(
         , manga_nme_(std::move(manga_nme))
         , chap_cont_(std::move(chap_cont))
 {
+    if (manga_nme_.empty())
+    {
+        for (std::filesystem::path nme_buildr = bse_uri_;
+             !nme_buildr.empty();
+             nme_buildr = nme_buildr.parent_path())
+        {
+            if (!nme_buildr.filename().empty())
+            {
+                manga_nme_ = nme_buildr.filename();
+                break;
+            }
+        }
+        
+        if (manga_nme_.empty())
+        {
+            manga_nme_ = "Unknown";
+        }
+    }
 }
 
 
@@ -191,7 +209,7 @@ bool program::download_chapter(const chapter& chap) const
     
     while (!pag_uri.empty())
     {
-        std::cout << spdios::set_light_blue_text << "Downloading page " << pag_uri << "...";
+        std::cout << spdios::set_light_blue_text << "Downloading page in " << pag_uri << "...";
         if (!download_page(chap.get_name(), chap_pth, pag_uri, &pag_uri))
         {
             std::cout << spdios::set_light_red_text << "[fail]" << spdios::newl;

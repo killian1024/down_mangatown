@@ -1,6 +1,6 @@
 ### down_mangatown ###
 
-down_mangatown is a simple C++ program whose propose download manga scans using mangatown.com.
+down_mangatown is a simple C++ program whose purpose is downloading manga scans using mangatown.com.
 For more information use `./down_mangatown --help` command.
 
 ### Build ###
