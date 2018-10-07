@@ -46,7 +46,7 @@ program::program(
 
 program::~program()
 {
-    std::cout << spdios::set_default_text;
+    std::cout << spd::ios::set_default_text;
 }
 
 
@@ -55,13 +55,13 @@ int program::execute()
     std::list<chapter> chap_lst;
     bool cont = !chap_cont_.empty();
     
-    std::cout << spdios::set_light_blue_text << "Downloading chapters data...";
+    std::cout << spd::ios::set_light_blue_text << "Downloading chapters data...";
     if (!download_charpters_data(&chap_lst))
     {
-        std::cout << spdios::set_light_red_text << "[fail]" << spdios::newl;
+        std::cout << spd::ios::set_light_red_text << "[fail]" << spd::ios::newl;
         return -1;
     }
-    std::cout << spdios::set_light_green_text << "[ok]" << spdios::newl;
+    std::cout << spd::ios::set_light_green_text << "[ok]" << spd::ios::newl;
     
     for (auto& x : chap_lst)
     {
@@ -75,9 +75,9 @@ int program::execute()
             cont = false;
         }
         
-        std::cout << spdios::set_light_blue_text
+        std::cout << spd::ios::set_light_blue_text
                   << "Downloading chapter " << x.get_name()
-                  << spdios::newl;
+                  << spd::ios::newl;
         if (!download_chapter(x))
         {
             return -1;
@@ -107,9 +107,9 @@ bool program::download_charpters_data(std::list<chapter>* chap_lst) const
     sstream.fill('0');
     
     // Download the index page.
-    dest_pth = spdsys::get_tmp_path();
+    dest_pth = spd::sys::get_tmp_path();
     dest_pth /= "down-mangatown-index";
-    dest_pth += std::to_string(spdsys::get_pid());
+    dest_pth += std::to_string(spd::sys::get_pid());
     if (!http_get(bse_uri_, dest_pth))
     {
         return false;
@@ -161,11 +161,11 @@ bool program::download_charpters_data(std::list<chapter>* chap_lst) const
                 continue;
             }
             
-            chap_nr = spdcast::type_cast<std::size_t>(chap_nme_match.str());
+            chap_nr = spd::cast::type_cast<std::size_t>(chap_nme_match.str());
             
-            if (spdscalars::get_n_digits(chap_nr) > max_digs)
+            if (spd::scals::get_n_digits(chap_nr) > max_digs)
             {
-                max_digs = spdscalars::get_n_digits(chap_nr);
+                max_digs = spd::scals::get_n_digits(chap_nr);
             }
             
             sstream.str("");
@@ -198,24 +198,24 @@ bool program::download_chapter(const chapter& chap) const
     
     if (!std::filesystem::exists(chap_pth))
     {
-        std::cout << spdios::set_light_blue_text << "Making directory " << chap_pth << "...";
-        if (!spdsys::mkdir(chap_pth.c_str()))
+        std::cout << spd::ios::set_light_blue_text << "Making directory " << chap_pth << "...";
+        if (!spd::sys::mkdir(chap_pth.c_str()))
         {
-            std::cout << spdios::set_light_red_text << "[fail]" << spdios::newl;
+            std::cout << spd::ios::set_light_red_text << "[fail]" << spd::ios::newl;
             return false;
         }
-        std::cout << spdios::set_light_green_text << "[ok]" << spdios::newl;
+        std::cout << spd::ios::set_light_green_text << "[ok]" << spd::ios::newl;
     }
     
     while (!pag_uri.empty())
     {
-        std::cout << spdios::set_light_blue_text << "Downloading page in " << pag_uri << "...";
+        std::cout << spd::ios::set_light_blue_text << "Downloading page in " << pag_uri << "...";
         if (!download_page(chap.get_name(), chap_pth, pag_uri, &pag_uri))
         {
-            std::cout << spdios::set_light_red_text << "[fail]" << spdios::newl;
+            std::cout << spd::ios::set_light_red_text << "[fail]" << spd::ios::newl;
             return false;
         }
-        std::cout << spdios::set_light_green_text << "[ok]" << spdios::newl;
+        std::cout << spd::ios::set_light_green_text << "[ok]" << spd::ios::newl;
     }
     
     return true;
@@ -239,9 +239,9 @@ bool program::download_page(
     bool scs = true;
     
     // Download the page.
-    page_dest_pth = spdsys::get_tmp_path();
+    page_dest_pth = spd::sys::get_tmp_path();
     page_dest_pth /= "down-mangatown-page";
-    page_dest_pth += std::to_string(spdsys::get_pid());
+    page_dest_pth += std::to_string(spd::sys::get_pid());
     if (!http_get(pag_uri, page_dest_pth))
     {
         return false;
@@ -301,7 +301,7 @@ bool program::download_page(
     {
         raw_nxt_pag_uri += 2;
     }
-    if (spdstr::strcmp(raw_nxt_pag_uri, "javascript:void(0);") != 0)
+    if (spd::str::strcmp(raw_nxt_pag_uri, "javascript:void(0);") != 0)
     {
         *nxt_pag_uri = raw_nxt_pag_uri;
     }
@@ -332,7 +332,7 @@ bool program::http_get(
     cmd += "\"";
     cmd.erase(remove_if(cmd.begin(), cmd.end(), [](int ch) { return ch == '\0'; }), cmd.end());
     
-    if (spdsys::execute_command(cmd.c_str(), &ret_val))
+    if (spd::sys::execute_command(cmd.c_str(), &ret_val))
     {
         return ret_val == 0;
     }
@@ -393,7 +393,7 @@ xmlNode* program::search_tag(
         if (cur_nde->type == XML_ELEMENT_NODE)
         {
             if (strcmp((const char*)cur_nde->name, tag_nme) == 0 &&
-                spdstr::strcmp((const char*)xmlGetProp(cur_nde, (const xmlChar*)attr_nme),
+                spd::str::strcmp((const char*)xmlGetProp(cur_nde, (const xmlChar*)attr_nme),
                                val_nme) == 0)
             {
                 return cur_nde;
