@@ -11,6 +11,7 @@
 #include <libxml/HTMLparser.h>
 
 #include <speed/speed.hpp>
+#include <speed/speed_alias.hpp>
 
 #include "chapter.hpp"
 
