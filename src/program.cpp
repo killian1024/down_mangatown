@@ -209,7 +209,7 @@ bool program::download_chapter(const chapter& chap) const
     
     while (!pag_uri.empty())
     {
-        std::cout << spd::ios::set_light_blue_text << "Downloading page in " << pag_uri << "...";
+        std::cout << spd::ios::set_light_blue_text << "Downloading page from " << pag_uri << "...";
         if (!download_page(chap.get_name(), chap_pth, pag_uri, &pag_uri))
         {
             std::cout << spd::ios::set_light_red_text << "[fail]" << spd::ios::newl;
